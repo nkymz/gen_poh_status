@@ -37,6 +37,7 @@ def main():
     options = Options()
     # options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=WEBDRIVERPATH, options=options)
+    print(type(driver))
 
     time.sleep(1)
     driver.get(JRA_DF_URL)
@@ -52,13 +53,26 @@ def main():
         print("放牧")
     else:
         print("放牧じゃない")
+    driver.find_element_by_xpath("//a[@href='javascript:history.back()']").click()
+    time.sleep(1)
+    driver.find_element_by_xpath("//td[contains(text(), '競走馬名')]/following-sibling::td[1]/input").clear()
+    driver.find_element_by_xpath("//td[contains(text(), '競走馬名')]/following-sibling::td[1]/input").send_keys("サターン")
+    driver.find_element_by_xpath("//td[contains(text(), '競走馬名')]/following-sibling::td[1]/a").click()
+    time.sleep(1)
+    driver.find_element_by_xpath("//a[contains(text(), 'サターン')]").click()
+    if driver.find_elements_by_xpath("//td[contains(text(), '放牧')]"):
+        print("放牧")
+    else:
+        print("放牧じゃない")
+
     # print(driver.find_elements_by_xpath("//a[contains(text(), 'ビーチサンバ')]/..")[1].text)
     # print(driver.find_elements_by_xpath("//a[contains(text(), '*ビーチサンバ')]/..")[1].text)
     # for i in driver.find_elements_by_xpath("//a/.."):
     #    print(i.text)
-
-
+    # / html / body / table / tbody / tr / td / table[6] / tbody / tr / td / table[1] / tbody / tr[1] / td[3] / span / a
+    # javascript: history.back()
     time.sleep(5)
+
 
 if __name__ == "__main__":
     main()
