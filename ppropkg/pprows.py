@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 import pprint
 
 NEXT_RACE_INFO_URL = "http://pog-info.com/archives/category/pog/news"
@@ -19,11 +20,11 @@ class JRAHorseSearch:
     def __init__(self):
         options = Options()
         # options.add_argument('--headless')
-        driver = webdriver.Chrome(executable_path=WEBDRIVERPATH, options=options)
+        self.driver = webdriver.Chrome(executable_path=WEBDRIVERPATH, options=options)
         time.sleep(1)
-        driver.get(JRA_DF_URL)
+        self.driver.get(JRA_DF_URL)
         time.sleep(1)
-        driver.find_element_by_xpath("//img[@alt='競走馬検索']/../..").click()
+        self.driver.find_element_by_xpath("//img[@alt='競走馬検索']/../..").click()
 
     def get_status(self, horse_name):
         time.sleep(1)
@@ -35,9 +36,14 @@ class JRAHorseSearch:
         time.sleep(1)
         try:
             self.driver.find_element_by_xpath("//a[contains(text(), '" + horse_name + "')]").click()
-        except:
-            pass
-
+        except NoSuchElementException:
+            return "未登録"
+        if self.driver.find_elements_by_xpath("//td[contains(text(), '放牧')]"):
+            self.driver.find_element_by_xpath("//a[@href='javascript:history.back()']").click()
+            return "放牧"
+        else:
+            self.driver.find_element_by_xpath("//a[@href='javascript:history.back()']").click()
+            return "非放牧"
 
 
 class Soup:

@@ -36,19 +36,15 @@ DICT_SEARCH_FORM = {
 
 
 def main():
-    jra_horse_search = JRAHorseSearch
-    poh_list = POHorseList
+    jra_horse_search = JRAHorseSearch()
+    poh_list = POHorseList()
     poh_status_list = []
-    for poh in poh_list.get_status_list():
+    poh_name_list = poh_list.get_name_list()
+    for poh in poh_name_list:
         horse_name, xlrow = poh[0], poh[1]
         if len(horse_name) >= 6 and horse_name[-5] == "の":
             continue
-        horse_status = jra_horse_search.get_status(horse_name)
-
-
-
-
-
+        print(horse_name + jra_horse_search.get_status(horse_name))
 
 
 def main2():
