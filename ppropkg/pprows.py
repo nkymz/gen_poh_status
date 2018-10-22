@@ -19,7 +19,7 @@ class JRAHorseSearch:
 
     def __init__(self):
         options = Options()
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         self.driver = webdriver.Chrome(executable_path=WEBDRIVERPATH, options=options)
         time.sleep(1)
         self.driver.get(JRA_DF_URL)
