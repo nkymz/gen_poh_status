@@ -11,6 +11,8 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import openpyxl
 
+from ppropkg.pproxls import POHorseList
+from ppropkg.pprows import JRAHorseSearch
 
 POGPATH = os.getenv("HOMEDRIVE", "None") + os.getenv("HOMEPATH", "None") + "/Dropbox/POG/"
 WBPATH = (POGPATH + "POG_HorseList.xlsx").replace("\\", "/")
@@ -34,6 +36,22 @@ DICT_SEARCH_FORM = {
 
 
 def main():
+    jra_horse_search = JRAHorseSearch
+    poh_list = POHorseList
+    poh_status_list = []
+    for poh in poh_list.get_status_list():
+        horse_name, xlrow = poh[0], poh[1]
+        if len(horse_name) >= 6 and horse_name[-5] == "の":
+            continue
+        horse_status = jra_horse_search.get_status(horse_name)
+
+
+
+
+
+
+
+def main2():
     options = Options()
     # options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=WEBDRIVERPATH, options=options)
