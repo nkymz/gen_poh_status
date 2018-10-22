@@ -45,6 +45,9 @@ class JRAHorseSearch:
             self.driver.find_element_by_xpath("//a[@href='javascript:history.back()']").click()
             return "非放牧"
 
+    def quit(self):
+        self.driver.quit()
+
 
 class Soup:
 
