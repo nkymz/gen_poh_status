@@ -2,6 +2,7 @@
 
 from ppropkg.pproxls import POHorseList
 from ppropkg.pprows import JRAHorseSearch
+from ppropkg.pprotext import POHStatusHTMLUpdated
 
 
 def main():
@@ -16,8 +17,10 @@ def main():
         poh_status_list.append([xlrow, jra_horse_search.get_status(horse_name)])
     jra_horse_search.quit()
     if poh_list.update_status(poh_status_list):
-
-
+        poh_html_updated = POHStatusHTMLUpdated()
+        for poh in poh_list.get_status_list("updated_only"):
+            poh_html_updated.write_content_row(poh)
+        poh_html_updated.close()
     poh_list.save()
     poh_list.close()
 
