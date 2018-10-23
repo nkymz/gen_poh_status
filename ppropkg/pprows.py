@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
-import pprint
+# import pprint
 
 NEXT_RACE_INFO_URL = "http://pog-info.com/archives/category/pog/news"
 NEXT_RACE_ARTICLE_URL = "http://pog-info.com/archives/{}"

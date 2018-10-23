@@ -15,11 +15,12 @@ def main():
         print(horse_name + jra_horse_search.get_status(horse_name))
         poh_status_list.append([xlrow, jra_horse_search.get_status(horse_name)])
     jra_horse_search.quit()
-    poh_list.update_status(poh_status_list)
+    if poh_list.update_status(poh_status_list):
+
+
     poh_list.save()
     poh_list.close()
 
 
 if __name__ == "__main__":
     main()
-

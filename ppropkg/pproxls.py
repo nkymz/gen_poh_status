@@ -15,35 +15,39 @@ class POHorseList:
         self.wb = openpyxl.load_workbook(self.wbpath)
         self.ws = self.wb["POHorseList"]
 
+        self.COL_OWNER_GENDER_RANK, self.COL_HORSE_NAME, self.COL_NAME_ORIGIN, self.COL_NK_URL, self.COL_NK_URL_SP, \
+            self.COL_IS_SEALED, self.COL_NK_ID, self.COL_OWNER, self.COL_GENDER, self.COL_NOM_RANK, self.COL_STATUS, \
+            self.COL_STATUS_OLD = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+
+    @staticmethod
+    def _get_new_status(jra_status, status_old):
+        if jra_status == "放牧":
+            return "放牧"
+        elif jra_status == "非放牧":
+            if status_old in ("未登録", "登録", "抹消", "地方", "海外"):
+                return "登録"
+            elif status_old in ("在厩", "放牧"):
+                return "在厩"
+        elif jra_status == "未登録":
+            if status_old == "未登録":
+                return "未登録"
+            elif status_old in ("登録", "在厩", "放牧"):
+                return "抹消"
+            elif status_old in ("抹消", "地方", "海外"):
+                return status_old
+
     def update_status(self, status_list):
-
-        def get_new_status(jra_status_, status_old_):
-            if jra_status_ == "放牧":
-                return "放牧"
-            elif jra_status_ == "非放牧":
-                if status_old_ in ("未登録", "登録", "抹消", "地方", "海外"):
-                    return "登録"
-                elif status_old_ in ("在厩", "放牧"):
-                    return "在厩"
-            elif jra_status_ == "未登録":
-                if status_old_ == "未登録":
-                    return "未登録"
-                elif status_old_ in ("登録", "在厩", "放牧"):
-                    return "抹消"
-                elif status_old_ in ("抹消", "地方", "海外"):
-                    return status_old_
-
         is_updated = False
 
         for status_row in status_list:
             xlrow, jra_status = status_row[0], status_row[1]
-            status_old = self.ws.cell(row=xlrow, column=11).value
-            status_new = get_new_status(jra_status, status_old)
+            status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            status_new = self._get_new_status(jra_status, status_old)
 
             if status_new != status_old:
                 is_updated = True
-                self.ws.cell(row=xlrow, column=11).value = status_new
-                self.ws.cell(row=xlrow, column=12).value = status_old
+                self.ws.cell(row=xlrow, column=self.COL_STATUS).value = status_new
+            self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value = status_old
 
         return is_updated
 
@@ -52,22 +56,41 @@ class POHorseList:
         mylist = []
 
         while self.ws.cell(row=xlrow, column=1).value:
-            horse_name = self.ws.cell(row=xlrow, column=2).value
-            owner_name = self.ws.cell(row=xlrow, column=1).value
-            horse_id = self.ws.cell(row=xlrow, column=7).value
-            is_seal = False if self.ws.cell(row=xlrow, column=6).value == "-" else True
+            horse_name = self.ws.cell(row=xlrow, column=self.COL_HORSE_NAME).value
+            owner_name = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
+            horse_id = self.ws.cell(row=xlrow, column=self.COL_NK_ID).value
+            is_seal = False if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value == "-" else True
             mylist.append([horse_id, horse_name, owner_name, is_seal])
             xlrow += 1
-        self.wb.close()
         return mylist
 
     def get_name_list(self):
         xlrow = 2
         mylist = []
-        while self.ws.cell(row=xlrow, column=1).value:
-            horse_name = self.ws.cell(row=xlrow, column=2).value
-            if self.ws.cell(row=xlrow, column=6).value == "-":
+        while self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value:
+            horse_name = self.ws.cell(row=xlrow, column=self.COL_HORSE_NAME).value
+            if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value == "-":
                 mylist.append([horse_name,  xlrow])
+            xlrow += 1
+        return mylist
+
+    def get_status_list(self, *args):
+        xlrow = 2
+        mylist = []
+
+        while self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value:
+            if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value != "-":
+                xlrow += 1
+                continue
+            status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value
+            if "updated_only" in args and status == status_old:
+                xlrow += 1
+                continue
+            owner_gender_rank = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
+            horse_name = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
+            horse_id = self.ws.cell(row=xlrow, column=self.COL_NK_ID).value
+            mylist.append([horse_name, owner_gender_rank, horse_id, status, status_old])
             xlrow += 1
         return mylist
 
