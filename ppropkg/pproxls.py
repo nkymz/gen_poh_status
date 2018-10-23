@@ -88,10 +88,18 @@ class POHorseList:
                 xlrow += 1
                 continue
             owner_gender_rank = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
-            horse_name = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
+            horse_name = self.ws.cell(row=xlrow, column=self.COL_HORSE_NAME).value
             horse_id = self.ws.cell(row=xlrow, column=self.COL_NK_ID).value
-            mylist.append([horse_name, owner_gender_rank, horse_id, status, status_old])
+            owner = self.ws.cell(row=xlrow, column=self.COL_OWNER).value
+            gender = self.ws.cell(row=xlrow, column=self.COL_GENDER).value
+            nom_rank = self.ws.cell(row=xlrow, column=self.COL_NOM_RANK).value
+            if "updated_only" in args:
+                mylist.append([horse_name, owner_gender_rank, horse_id, status, status_old])
+            else:
+                mylist.append([owner, gender, nom_rank, horse_name, horse_id, status, status_old])
+
             xlrow += 1
+
         return mylist
 
     def save(self):
