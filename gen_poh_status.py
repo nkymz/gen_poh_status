@@ -17,8 +17,9 @@ def main():
         horse_name, xlrow = poh
         if len(horse_name) >= 6 and horse_name[-5] == "の":
             continue
-        print(horse_name + jra_horse_search.get_status(horse_name))
-        poh_status_list.append([xlrow, jra_horse_search.get_status(horse_name)])
+        horse_status = jra_horse_search.get_status(horse_name)
+        print(horse_name + horse_status)
+        poh_status_list.append([xlrow, horse_status])
     jra_horse_search.quit()
     if poh_list.update_status(poh_status_list):
         poh_html_updated = POHStatusHTMLUpdated()
