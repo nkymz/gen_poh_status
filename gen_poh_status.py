@@ -22,11 +22,14 @@ def main():
         poh_status_list.append([xlrow, horse_status])
     jra_horse_search.quit()
     if poh_list.update_status(poh_status_list):
+        print("更新あり")
         poh_html_updated = POHStatusHTMLUpdated()
         poh_html_updated.write_header()
         for poh in poh_list.get_status_list("updated_only"):
             poh_html_updated.write_content_row(poh)
         poh_html_updated.close()
+    else:
+        print("更新なし")
 
     poh_html = POHStatusHTML()
     poh_html.write_header(date_time_now)

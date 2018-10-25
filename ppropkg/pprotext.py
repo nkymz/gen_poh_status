@@ -13,7 +13,8 @@ POH_STATUS_HTML_HEADER = """
 """
 
 POH_STATUS_HTML_UPDATED_HEADER = """
-<p>JRAホームページより取得した情報をもとに機械的に判定しているため、実際とは異なることがあります。</p>
+<p>JRAホームページより取得した情報をもとに機械的に判定しているため、実際とは異なることがあります。<br>
+全頭リストは<a href="https://nkymz.github.io/ppro_status_list/">こちら</a></p>
 """
 
 
