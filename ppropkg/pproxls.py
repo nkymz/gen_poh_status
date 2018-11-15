@@ -82,8 +82,14 @@ class POHorseList:
             if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value != "-":
                 xlrow += 1
                 continue
-            status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
-            status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value
+            if self.ws.cell(row=xlrow, column=self.COL_STATUS).value:
+                status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            else:
+                status = "None"
+            if self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value:
+                status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value
+            else:
+                status_old = "None"
             if "updated_only" in args and status == status_old:
                 xlrow += 1
                 continue
