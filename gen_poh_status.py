@@ -12,6 +12,11 @@ def main():
     date_time_now = mynow.strftime("%Y/%m/%d %H:%M:%S")
     jra_horse_search = JRAHorseSearch("headless")
     poh_list = POHorseList()
+
+    poh_johndoe_list = []
+    for poh in poh_list.get_johndoe_list():
+
+
     poh_status_list = []
     for poh in poh_list.get_name_list():
         horse_name, xlrow = poh
