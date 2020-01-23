@@ -3,18 +3,26 @@
 import datetime
 
 from ppropkg.pproxls import POHorseList
-from ppropkg.pprows import JRAHorseSearch
+from ppropkg.pprows import JRAHorseSearch, NetKeiba
 from ppropkg.pprotext import POHStatusHTMLUpdated, POHStatusHTML
 
 
 def main():
     mynow = datetime.datetime.today()
     date_time_now = mynow.strftime("%Y/%m/%d %H:%M:%S")
-    jra_horse_search = JRAHorseSearch("headless")
     poh_list = POHorseList()
+    nk_id, nk_pw = poh_list.get_nk_auth_info()
+    nk = NetKeiba(nk_id, nk_pw, 0)
+#    jra_horse_search = JRAHorseSearch("headless")
 
     poh_johndoe_list = []
     for poh in poh_list.get_johndoe_list():
+        nk_url_sp, xlrow = poh
+        horse_name, origin, duty_status, address = nk.get_horse_info(nk_url_sp)
+        poh_johndoe_list.append([xlrow, horse_name, origin, duty_status, address])
+    nk.quit()
+#/html/body/div[1]/div/div/section[1]/div/h2
+
 
 
     poh_status_list = []

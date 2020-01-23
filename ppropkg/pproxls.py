@@ -14,10 +14,14 @@ class POHorseList:
         self.wbpath = (PPRO_PATH + PO_HORSELIST_NAME).replace("\\", "/")
         self.wb = openpyxl.load_workbook(self.wbpath)
         self.ws = self.wb["POHorseList"]
+        self.ws_set = self.wb["Settings"]
 
         self.COL_OWNER_GENDER_RANK, self.COL_HORSE_NAME, self.COL_NAME_ORIGIN, self.COL_NK_URL, self.COL_NK_URL_SP, \
             self.COL_IS_SEALED, self.COL_NK_ID, self.COL_OWNER, self.COL_GENDER, self.COL_NOM_RANK, self.COL_STATUS, \
             self.COL_STATUS_OLD = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+
+    def get_nk_auth_info(self):
+        return self.ws_set.cell(row=2, column=2).value, self.ws_set.cell(row=3, column=2).value
 
     @staticmethod
     def _get_new_status(jra_status, status_old):
@@ -61,6 +65,18 @@ class POHorseList:
             horse_id = self.ws.cell(row=xlrow, column=self.COL_NK_ID).value
             is_seal = False if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value == "-" else True
             mylist.append([horse_id, horse_name, owner_name, is_seal])
+            xlrow += 1
+        return mylist
+
+    def get_johndoe_list(self):
+        xlrow = 2
+        mylist = []
+        while self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value:
+            is_sealed = self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value
+            origin = self.ws.cell(row=xlrow, column=self.COL_NAME_ORIGIN).value
+            horse_url_sp = self.ws.cell(row=xlrow, column=self.COL_NK_URL_SP).value
+            if is_sealed == "-" and origin is None:
+                mylist.append([horse_url_sp,  xlrow])
             xlrow += 1
         return mylist
 
