@@ -21,35 +21,34 @@ def main():
         horse_name, origin, duty_status, address = nk.get_horse_info(nk_url_sp)
         poh_johndoe_list.append([xlrow, horse_name, origin, duty_status, address])
     nk.quit()
-#/html/body/div[1]/div/div/section[1]/div/h2
 
+    poh_list.update_johndoe(poh_johndoe_list)
 
-
-    poh_status_list = []
-    for poh in poh_list.get_name_list():
-        horse_name, xlrow = poh
-        if len(horse_name) >= 6 and horse_name[-5] == "の":
-            continue
-        horse_status = jra_horse_search.get_status(horse_name)
-        print(horse_name + horse_status)
-        poh_status_list.append([xlrow, horse_status])
-    jra_horse_search.quit()
-    if poh_list.update_status(poh_status_list):
-        print("更新あり")
-        poh_html_updated = POHStatusHTMLUpdated()
-        poh_html_updated.write_header()
-        for poh in poh_list.get_status_list("updated_only"):
-            poh_html_updated.write_content_row(poh)
-        poh_html_updated.close()
-    else:
-        print("更新なし")
-
-    poh_html = POHStatusHTML()
-    poh_html.write_header(date_time_now)
-    for poh in poh_list.get_status_list():
-        poh_html.write_content_row(poh)
-    poh_html.write_footer()
-    poh_html.close()
+    # poh_status_list = []
+    # for poh in poh_list.get_name_list():
+    #     horse_name, xlrow = poh
+    #     if len(horse_name) >= 6 and horse_name[-5] == "の":
+    #         continue
+    #     horse_status = jra_horse_search.get_status(horse_name)
+    #     print(horse_name + horse_status)
+    #     poh_status_list.append([xlrow, horse_status])
+    # jra_horse_search.quit()
+    # if poh_list.update_status(poh_status_list):
+    #     print("更新あり")
+    #     poh_html_updated = POHStatusHTMLUpdated()
+    #     poh_html_updated.write_header()
+    #     for poh in poh_list.get_status_list("updated_only"):
+    #         poh_html_updated.write_content_row(poh)
+    #     poh_html_updated.close()
+    # else:
+    #     print("更新なし")
+    #
+    # poh_html = POHStatusHTML()
+    # poh_html.write_header(date_time_now)
+    # for poh in poh_list.get_status_list():
+    #     poh_html.write_content_row(poh)
+    # poh_html.write_footer()
+    # poh_html.close()
 
     poh_list.save()
     poh_list.close()

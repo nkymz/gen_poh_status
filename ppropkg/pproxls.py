@@ -18,7 +18,7 @@ class POHorseList:
 
         self.COL_OWNER_GENDER_RANK, self.COL_HORSE_NAME, self.COL_NAME_ORIGIN, self.COL_NK_URL, self.COL_NK_URL_SP, \
             self.COL_IS_SEALED, self.COL_NK_ID, self.COL_OWNER, self.COL_GENDER, self.COL_NOM_RANK, self.COL_STATUS, \
-            self.COL_STATUS_OLD = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+            self.COL_ADDRESS, self.COL_STATUS_OLD, self.COL_ADDRESS_OLD = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
 
     def get_nk_auth_info(self):
         return self.ws_set.cell(row=2, column=2).value, self.ws_set.cell(row=3, column=2).value
@@ -39,6 +39,14 @@ class POHorseList:
                 return "抹消"
             elif status_old in ("抹消", "地方", "海外"):
                 return status_old
+
+    def update_johndoe(self, johndoe_list):
+        for poh in johndoe_list:
+            xlrow, horse_name, origin, duty_status, address = poh
+            self.ws.cell(row=xlrow, column=self.COL_HORSE_NAME).value = horse_name
+            self.ws.cell(row=xlrow, column=self.COL_NAME_ORIGIN).value = origin
+            self.ws.cell(row=xlrow, column=self.COL_STATUS).value = duty_status
+            self.ws.cell(row=xlrow, column=self.COL_ADDRESS).value = address
 
     def update_status(self, status_list):
         is_updated = False
@@ -75,7 +83,7 @@ class POHorseList:
             is_sealed = self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value
             origin = self.ws.cell(row=xlrow, column=self.COL_NAME_ORIGIN).value
             horse_url_sp = self.ws.cell(row=xlrow, column=self.COL_NK_URL_SP).value
-            if is_sealed == "-" and origin is None:
+            if is_sealed == "-" and (origin is None or origin == "-"):
                 mylist.append([horse_url_sp,  xlrow])
             xlrow += 1
         return mylist

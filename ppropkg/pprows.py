@@ -32,10 +32,19 @@ class NetKeiba:
 
     def get_horse_info(self, nk_url_sp):
         self.driver.get(nk_url_sp)
-        x = 1
+        self.driver.find_element_by_xpath("//a[@id='MoreRead']").click()
+        horse_name = self.driver.find_element_by_xpath("//section[contains(@class,'ProfileHeader')]//h2").text
+        origin = self.driver.find_element_by_xpath("//th[contains(text(),'馬名の意味')]/../td").text
+        duty_status = "-"
+        address = "-"
+        if len(self.driver.find_elements_by_xpath(
+                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')]")) == 2:
+            duty_status = self.driver.find_element_by_xpath(
+                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')][1]").text
+            address = self.driver.find_element_by_xpath(
+                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')][2]").text
 
-
-
+        return horse_name, origin, duty_status, address
 
     def quit(self):
         self.driver.quit()
