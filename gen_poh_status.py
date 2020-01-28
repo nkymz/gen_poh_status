@@ -15,14 +15,14 @@ def main():
     nk = NetKeiba(nk_id, nk_pw, 0)
 #    jra_horse_search = JRAHorseSearch("headless")
 
-    poh_johndoe_list = []
-    for poh in poh_list.get_johndoe_list():
+    horse_list = []
+    for poh in poh_list.get_horse_list():
         nk_url_sp, xlrow = poh
-        horse_name, origin, duty_status, address = nk.get_horse_info(nk_url_sp)
-        poh_johndoe_list.append([xlrow, horse_name, origin, duty_status, address])
+        horse_name, origin, status, next_race = nk.get_horse_info(nk_url_sp)
+        horse_list.append([xlrow, horse_name, origin, status, next_race])
     nk.quit()
 
-    poh_list.update_johndoe(poh_johndoe_list)
+    poh_list.update_horse_list(horse_list)
 
     # poh_status_list = []
     # for poh in poh_list.get_name_list():

@@ -35,16 +35,26 @@ class NetKeiba:
         self.driver.find_element_by_xpath("//a[@id='MoreRead']").click()
         horse_name = self.driver.find_element_by_xpath("//section[contains(@class,'ProfileHeader')]//h2").text
         origin = self.driver.find_element_by_xpath("//th[contains(text(),'馬名の意味')]/../td").text
-        duty_status = "-"
-        address = "-"
-        if len(self.driver.find_elements_by_xpath(
-                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')]")) == 2:
-            duty_status = self.driver.find_element_by_xpath(
-                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')][1]").text
-            address = self.driver.find_element_by_xpath(
+        status = "未登録"
+        label_len = len(self.driver.find_elements_by_xpath(
+            "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')]"))
+        if label_len == 2:
+            status = self.driver.find_element_by_xpath(
                 "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')][2]").text
+        elif label_len == 1:
+            status_wk = self.driver.find_element_by_xpath(
+                "//section[contains(@class,'ProfileHeader')]//span[contains(@class,'label')][1]").text
+            if status_wk == "抹消":
+                status = "抹消"
+            else:
+                status = "登録済"
+        next_race = "-"
+        if len(self.driver.find_elements_by_xpath(
+            "//section[contains(@class,'RaceResults')]/div[contains(@class,'RaceEntry')]/span[contains(@class,'Set_RaceName')]")):
+            next_race = self.driver.find_element_by_xpath(
+                "//section[contains(@class,'RaceResults')]//span[contains(@class,'Set_RaceName')]").text
 
-        return horse_name, origin, duty_status, address
+        return horse_name, origin, status, next_race
 
     def quit(self):
         self.driver.quit()
