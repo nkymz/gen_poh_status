@@ -18,8 +18,9 @@ class POHorseList:
 
         self.COL_OWNER_GENDER_RANK, self.COL_HORSE_NAME, self.COL_NAME_ORIGIN, self.COL_NK_URL, self.COL_NK_URL_SP, \
             self.COL_IS_SEALED, self.COL_NK_ID, self.COL_OWNER, self.COL_GENDER, self.COL_NOM_RANK, self.COL_STATUS, \
-            self.COL_NEXT_RACE, self.COL_STATUS_OLD, self.COL_NEXT_RACE_OLD \
-            = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+            self.COL_NEXT_RACE, self.COL_STATUS_OLD, self.COL_NEXT_RACE_OLD, self.COL_STATUS_UPDATED_FLAG, \
+            self.COL_NEXT_RACE_UPDATED_FLAG \
+            = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 
     def get_nk_auth_info(self):
         return self.ws_set.cell(row=2, column=2).value, self.ws_set.cell(row=3, column=2).value
@@ -42,12 +43,31 @@ class POHorseList:
                 return status_old
 
     def update_horse_list(self, horse_list):
+        is_updated = False
+
         for poh in horse_list:
             xlrow, horse_name, origin, status, next_race = poh
             self.ws.cell(row=xlrow, column=self.COL_HORSE_NAME).value = horse_name
             self.ws.cell(row=xlrow, column=self.COL_NAME_ORIGIN).value = origin
+            status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            next_race_old = self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE).value
             self.ws.cell(row=xlrow, column=self.COL_STATUS).value = status
             self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE).value = next_race
+            self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value = status_old
+            self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE_OLD).value = next_race_old
+            is_sealed = self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value
+            if status == status_old:
+                self.ws.cell(row=xlrow, column=self.COL_STATUS_UPDATED_FLAG).value = "F"
+            else:
+                self.ws.cell(row=xlrow, column=self.COL_STATUS_UPDATED_FLAG).value = "T"
+                is_updated = True if is_sealed == "-" else is_updated
+            if next_race == next_race_old:
+                self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE_UPDATED_FLAG).value = "F"
+            else:
+                self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE_UPDATED_FLAG).value = "T"
+                is_updated = True if is_sealed == "-" else is_updated
+
+        return is_updated
 
     def update_status(self, status_list):
         is_updated = False

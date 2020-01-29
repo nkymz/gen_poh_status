@@ -22,7 +22,17 @@ def main():
         horse_list.append([xlrow, horse_name, origin, status, next_race])
     nk.quit()
 
-    poh_list.update_horse_list(horse_list)
+    if poh_list.update_horse_list(horse_list):
+        print("更新あり")
+        poh_html_updated = POHStatusHTMLUpdated()
+        poh_html_updated.write_header()
+        for poh in poh_list.get_status_list("updated_only"):
+            poh_html_updated.write_content_row(poh)
+        poh_html_updated.close()
+    else:
+        print("更新なし")
+
+
 
     # poh_status_list = []
     # for poh in poh_list.get_name_list():
