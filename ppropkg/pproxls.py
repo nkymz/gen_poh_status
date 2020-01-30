@@ -124,15 +124,17 @@ class POHorseList:
             if self.ws.cell(row=xlrow, column=self.COL_IS_SEALED).value != "-":
                 xlrow += 1
                 continue
-            if self.ws.cell(row=xlrow, column=self.COL_STATUS).value:
-                status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
-            else:
-                status = "None"
-            if self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value:
-                status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value
-            else:
-                status_old = "None"
-            if "updated_only" in args and status == status_old:
+            # if self.ws.cell(row=xlrow, column=self.COL_STATUS).value:
+            #     status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            # else:
+            #     status = "None"
+            # if self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value:
+            #     status_old = self.ws.cell(row=xlrow, column=self.COL_STATUS_OLD).value
+            # else:
+            #     status_old = "None"
+            is_status_updated = True if self.ws.cell(row=xlrow, column=self.COL_STATUS_UPDATED_FLAG).value == "T" else False
+            is_next_race_updated = True if self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE_UPDATED_FLAG).value == "T" else False
+            if "updated_only" in args and not (is_status_updated or is_next_race_updated):
                 xlrow += 1
                 continue
             owner_gender_rank = self.ws.cell(row=xlrow, column=self.COL_OWNER_GENDER_RANK).value
@@ -141,10 +143,12 @@ class POHorseList:
             owner = self.ws.cell(row=xlrow, column=self.COL_OWNER).value
             gender = self.ws.cell(row=xlrow, column=self.COL_GENDER).value
             nom_rank = self.ws.cell(row=xlrow, column=self.COL_NOM_RANK).value
+            status = self.ws.cell(row=xlrow, column=self.COL_STATUS).value
+            next_race = self.ws.cell(row=xlrow, column=self.COL_NEXT_RACE).value
             if "updated_only" in args:
-                mylist.append([horse_name, owner_gender_rank, horse_id, status, status_old])
+                mylist.append([horse_name, owner_gender_rank, horse_id, status, next_race, is_status_updated, is_next_race_updated])
             else:
-                mylist.append([owner, gender, nom_rank, horse_name, horse_id, status, status_old])
+                mylist.append([owner, gender, nom_rank, horse_name, horse_id, status, next_race, is_status_updated, is_next_race_updated])
 
             xlrow += 1
 

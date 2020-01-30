@@ -32,6 +32,15 @@ def main():
     else:
         print("更新なし")
 
+    poh_html = POHStatusHTML()
+    poh_html.write_header(date_time_now)
+    for poh in poh_list.get_status_list():
+        poh_html.write_content_row(poh)
+    poh_html.write_footer()
+    poh_html.close()
+
+    poh_list.save()
+    poh_list.close()
 
 
     # poh_status_list = []
@@ -53,15 +62,6 @@ def main():
     # else:
     #     print("更新なし")
     #
-    # poh_html = POHStatusHTML()
-    # poh_html.write_header(date_time_now)
-    # for poh in poh_list.get_status_list():
-    #     poh_html.write_content_row(poh)
-    # poh_html.write_footer()
-    # poh_html.close()
-
-    poh_list.save()
-    poh_list.close()
 
 
 if __name__ == "__main__":

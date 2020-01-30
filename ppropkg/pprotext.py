@@ -35,8 +35,16 @@ class POHStatusHTMLUpdated:
 
     def write_content_row(self, row):
         horse_name, owner_gender_rank, horse_id, status, next_race, is_status_updated, is_next_race_updated = row
-        s = '<a href="' + self._get_horse_url(horse_id) + '">' + horse_name + owner_gender_rank + '</a>' + " " \
-            + status_old + "→" + status + '<br>\n'
+        s = '<a href="' + self._get_horse_url(horse_id) + '">' + horse_name + owner_gender_rank + '</a>' + " "
+        if is_status_updated:
+            s += '<span class="bold_red">' + status + '</span> '
+        else:
+            s += status + ' '
+        if is_next_race_updated:
+            s += '<span class="bold_red">' + next_race + '</span><br />\n '
+        else:
+            s += next_race + '<br />'
+
         self.f.write(s)
 
 
@@ -65,7 +73,7 @@ class POHStatusHTML:
         self.f.write('</table>\n')
 
     def write_content_row(self, row):
-        owner, gender, nom_rank, horse_name, horse_id, status, next_race = row
+        owner, gender, nom_rank, horse_name, horse_id, status, next_race, is_status_updated, is_next_race_updated = row
         if gender == "牡" and nom_rank == "1":
             s = '<tr><td rowspan="10">' + owner + '</td>' + '<td rowspan="5">' + gender + '</td>' + '<td>' + nom_rank \
                 + '</td>'
@@ -74,10 +82,14 @@ class POHStatusHTML:
         else:
             s = '<tr><td>' + nom_rank + '</td>'
         s += '<td><a href="' + self._get_horse_url(horse_id) + '">' + horse_name + '</a></td>'
-        if status == status:
-            s += '<td>' + status + '</td></tr>\n'
+        if is_status_updated:
+            s += '<td><span class="bold_red">' + status + '</span></td>'
         else:
-            s += '<td><span class="bold_red">' + status + '←' + next_race + '</span></td></tr>\n'
+            s += '<td>' + status + '</td>'
+        if is_next_race_updated:
+            s += '<td><span class="bold_red">' + next_race + '</span></td></tr>\n'
+        else:
+            s += '<td>' + next_race + '</td></tr>\n'
 
         self.f.write(s)
 
